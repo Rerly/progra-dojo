@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上級 | プログラ道場</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+  <header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo">
+      <img src="../assets/images/logo.png" alt="プログラ道場">
+    </a>
+    <nav>
+      <ul>
+        <li><a href="beginner.html">初級</a></li>
+        <li><a href="intermediate.html">中級</a></li>
+        <li><a href="advanced.html">上級</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+  <!-- メインコンテンツ -->
+  <main class="advanced-container">
+
+    <section class="advanced-section">
+
+      <h1>上級：ローカル保存TODOアプリ</h1>
+      <p>ページを更新してもタスクが消えないアプリを作ります。</p>
+
+      <!-- 入力エリア -->
+      <div class="todo-input-area">
+        <input type="text" id="todoInput" placeholder="タスクを入力">
+        <button id="addTodo" class="btn">追加</button>
+      </div>
+
+      <!-- フィルター -->
+      <div class="todo-filter">
+        <button class="filter-btn active" data-filter="all">すべて</button>
+        <button class="filter-btn" data-filter="active">未完了</button>
+        <button class="filter-btn" data-filter="completed">完了</button>
+      </div>
+
+      <!-- リスト -->
+      <ul id="todoList" class="todo-list"></ul>
+
+      <!-- 全削除 -->
+      <div class="todo-actions">
+        <button id="clearAll" class="btn secondary">すべて削除</button>
+      </div>
+
+    </section>
+
+<section class="advanced-explain">
+
+  <h2>このTODOアプリの作り方</h2>
+
+  <div class="code-grid">
+
+    <!-- HTML側 -->
+    <div class="code-column">
+      <h3>HTML</h3>
+      <pre><code>
+&lt;input type="text" id="todoInput"&gt;
+&lt;button id="addTodo"&gt;追加&lt;/button&gt;
+&lt;ul id="todoList"&gt;&lt;/ul&gt;
+      </code></pre>
+    </div>
+
+    <!-- JS側 -->
+    <div class="code-column">
+      <h3>JavaScript</h3>
+      <pre><code>
+addTodo.addEventListener("click", function () {
+  todos.push({
+    id: Date.now(),
+    text: todoInput.value,
+    completed: false
+  });
+
+  saveTodos();
+  renderTodos();
+});
+      </code></pre>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級① クロージャとは？</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+function counter() {
+  let count = 0;
+
+  return function() {
+    count++;
+    return count;
+  };
+}
+
+const myCounter = counter();
+
+console.log(myCounter());
+console.log(myCounter());
+console.log(myCounter());
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>考えてみよう</h3>
+    <p>
+      なぜ count は毎回リセットされないのか？
+    </p>
+  </div>
+
+  <div class="explain-box">
+    <h3>解説</h3>
+    <p>
+      counter() の中の <strong>count</strong> は本来なら関数終了と同時に消える。
+      しかし、内部の関数が count を参照しているため、
+      JavaScriptはその変数を保持し続ける。
+    </p>
+    <p>
+      この「外側の変数を覚えている関数」の仕組みを
+      <strong>クロージャ（closure）</strong>という。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級② モジュールパターン</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const CounterModule = (function() {
+
+  let count = 0;
+
+  function increment() {
+    count++;
+    return count;
+  }
+
+  function reset() {
+    count = 0;
+  }
+
+  return {
+    increment,
+    reset
+  };
+
+})();
+
+console.log(CounterModule.increment());
+console.log(CounterModule.increment());
+CounterModule.reset();
+console.log(CounterModule.increment());
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>何が起きている？</h3>
+    <p>
+      count は外から直接アクセスできない。
+      しかし increment と reset を通して操作できる。
+    </p>
+  </div>
+
+  <div class="explain-box">
+    <h3>ポイント</h3>
+    <p>
+      即時関数（IIFE）でスコープを作り、
+      外に公開するものだけ return している。
+      これが「モジュールパターン」。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級③ this の正体</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const user = {
+  name: "Taro",
+  greet: function() {
+    console.log(this.name);
+  }
+};
+
+user.greet(); // 何が出る？
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>考えてみよう</h3>
+    <p>
+      this は何を指している？
+    </p>
+  </div>
+
+  <div class="explain-box">
+    <h3>解説</h3>
+    <p>
+      this は「その関数を呼び出したオブジェクト」を指す。
+      今回は user が greet を呼び出しているので、
+      this は user を指す。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級④ call()</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+function greet() {
+  console.log("こんにちは " + this.name);
+}
+
+const user = { name: "Taro" };
+
+greet.call(user);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>何が起きている？</h3>
+    <p>
+      call() は this を強制的に指定できる。
+      greet の中の this は user になる。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑤ apply()</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+function greet(greeting) {
+  console.log(greeting + " " + this.name);
+}
+
+const user = { name: "Hanako" };
+
+greet.apply(user, ["やあ"]);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>ポイント</h3>
+    <p>
+      apply は引数を配列で渡す。
+      それ以外は call と同じ。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑥ bind()</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+function greet() {
+  console.log("こんにちは " + this.name);
+}
+
+const user = { name: "Saburo" };
+
+const boundGreet = greet.bind(user);
+
+boundGreet();
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>違い</h3>
+    <p>
+      bind は「新しい関数」を作る。
+      すぐ実行しない。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑦ ES6 クラス</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+class User {
+  constructor(name) {
+    this.name = name;
+  }
+
+  greet() {
+    console.log("こんにちは " + this.name);
+  }
+}
+
+const user1 = new User("Taro");
+user1.greet();
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>何が起きている？</h3>
+    <p>
+      constructor はインスタンス生成時に実行される。
+      new を使うことでオブジェクトが作られる。
+    </p>
+  </div>
+
+</section>
+
+<div class="code-wrapper">
+  <div class="code-header">
+    <span>JavaScript</span>
+    <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+  </div>
+  <pre><code>
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    return this.name + " が鳴いた";
+  }
+}
+
+class Dog extends Animal {
+  speak() {
+    return this.name + " がワンと鳴いた";
+  }
+}
+
+const dog = new Dog("ポチ");
+console.log(dog.speak());
+  </code></pre>
+</div>
+
+<section class="advanced-learn">
+
+<div class="explain-box">
+  <h3>問題</h3>
+  <p>
+    ① consoleには何が出力される？<br>
+    ② なぜその結果になる？
+  </p>
+
+  <button class="btn secondary" onclick="toggleAnswer(this)">
+    解答を見る
+  </button>
+
+  <div class="answer-box" style="display: none; margin-top:15px;">
+    <p><strong>ポチ がワンと鳴いた</strong></p>
+    <p>
+      理由：Dogクラスがspeak()をオーバーライドしているため、
+      子クラスのメソッドが優先される。
+    </p>
+  </div>
+</div>
+
+<section class="advanced-learn">
+
+  <h2>上級⑧ 分割代入（Destructuring）</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const user = {
+  name: "Taro",
+  age: 18,
+  country: "Japan"
+};
+
+const { name, age } = user;
+
+console.log(name);
+console.log(age);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>問題</h3>
+    <p>
+      ① consoleには何が出力される？<br>
+      ② なぜ user.name と書かなくていい？
+    </p>
+
+    <button class="btn secondary" onclick="toggleAnswer(this)">
+      解答を見る
+    </button>
+
+    <div class="answer-box" style="display:none;">
+      <p><strong>出力：</strong><br>
+      Taro<br>
+      18</p>
+      <p>
+        理由：オブジェクトのプロパティを
+        変数として直接取り出しているから。
+      </p>
+    </div>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑨ map()</h2>
+
+  <!-- コード -->
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const numbers = [1, 2, 3];
+
+const doubled = numbers.map(num => num * 2);
+
+console.log(doubled);
+    </code></pre>
+  </div>
+
+  <!-- 説明 -->
+  <div class="explain-box">
+    <h3>このコードは何をしている？</h3>
+    <p>
+      numbers 配列の各要素を2倍に変換し、
+      新しい配列を作っている。
+    </p>
+  </div>
+
+  <!-- 分解 -->
+  <div class="explain-box">
+    <h3>処理の流れ</h3>
+    <ul>
+      <li>1 → 2</li>
+      <li>2 → 4</li>
+      <li>3 → 6</li>
+    </ul>
+    <p>
+      map() は配列の長さを変えずに、
+      全要素を変換するメソッド。
+    </p>
+  </div>
+
+  <!-- まとめ -->
+  <div class="explain-box">
+    <h3>ポイント</h3>
+    <ul>
+      <li>元の配列は変更されない</li>
+      <li>必ず新しい配列を返す</li>
+      <li>配列の長さは同じ</li>
+    </ul>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑩ filter()</h2>
+
+  <!-- コード -->
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const numbers = [1, 2, 3, 4, 5];
+
+const even = numbers.filter(num => num % 2 === 0);
+
+console.log(even);
+    </code></pre>
+  </div>
+
+  <!-- 説明 -->
+  <div class="explain-box">
+    <h3>このコードは何をしている？</h3>
+    <p>
+      numbers 配列から「偶数だけ」を取り出して、
+      新しい配列を作っている。
+    </p>
+  </div>
+
+  <!-- 分解 -->
+  <div class="explain-box">
+    <h3>処理の流れ</h3>
+    <ul>
+      <li>1 → 奇数 → 除外</li>
+      <li>2 → 偶数 → 残す</li>
+      <li>3 → 奇数 → 除外</li>
+      <li>4 → 偶数 → 残す</li>
+      <li>5 → 奇数 → 除外</li>
+    </ul>
+    <p>
+      条件が true のものだけが、新しい配列に入る。
+    </p>
+  </div>
+
+  <!-- まとめ -->
+  <div class="explain-box">
+    <h3>ポイント</h3>
+    <ul>
+      <li>条件に合う要素だけ残す</li>
+      <li>元の配列は変更されない</li>
+      <li>配列の長さは減ることがある</li>
+    </ul>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑪ reduce()</h2>
+
+  <!-- コード -->
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const numbers = [1, 2, 3, 4];
+
+const sum = numbers.reduce((acc, curr) => {
+  return acc + curr;
+}, 0);
+
+console.log(sum);
+    </code></pre>
+  </div>
+
+  <!-- 説明 -->
+  <div class="explain-box">
+    <h3>このコードは何をしている？</h3>
+    <p>
+      numbers 配列のすべての値を合計している。
+    </p>
+  </div>
+
+  <!-- 分解 -->
+  <div class="explain-box">
+    <h3>処理の流れ</h3>
+    <p>初期値 acc = 0</p>
+    <ul>
+      <li>1回目 → 0 + 1 = 1</li>
+      <li>2回目 → 1 + 2 = 3</li>
+      <li>3回目 → 3 + 3 = 6</li>
+      <li>4回目 → 6 + 4 = 10</li>
+    </ul>
+    <p>
+      最終的に 10 が返る。
+    </p>
+  </div>
+
+  <!-- まとめ -->
+  <div class="explain-box">
+    <h3>ポイント</h3>
+    <ul>
+      <li>acc は累積値（今までの結果）</li>
+      <li>curr は現在の値</li>
+      <li>初期値を指定できる</li>
+      <li>配列を1つの値にまとめる</li>
+    </ul>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑫ map / filter / reduce 総まとめ</h2>
+
+  <div class="explain-box">
+    <h3>3つの役割の違い</h3>
+
+    <table style="width:100%; border-collapse: collapse;">
+      <tr>
+        <th style="border:1px solid #ccc; padding:8px;">メソッド</th>
+        <th style="border:1px solid #ccc; padding:8px;">何をする？</th>
+        <th style="border:1px solid #ccc; padding:8px;">結果</th>
+      </tr>
+      <tr>
+        <td style="border:1px solid #ccc; padding:8px;">map</td>
+        <td style="border:1px solid #ccc; padding:8px;">各要素を変換する</td>
+        <td style="border:1px solid #ccc; padding:8px;">同じ長さの新しい配列</td>
+      </tr>
+      <tr>
+        <td style="border:1px solid #ccc; padding:8px;">filter</td>
+        <td style="border:1px solid #ccc; padding:8px;">条件に合うものだけ残す</td>
+        <td style="border:1px solid #ccc; padding:8px;">短くなることがある配列</td>
+      </tr>
+      <tr>
+        <td style="border:1px solid #ccc; padding:8px;">reduce</td>
+        <td style="border:1px solid #ccc; padding:8px;">配列を1つにまとめる</td>
+        <td style="border:1px solid #ccc; padding:8px;">1つの値</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="explain-box">
+    <h3>イメージで理解</h3>
+    <p><strong>map</strong> → 変換工場</p>
+    <p><strong>filter</strong> → ふるい</p>
+    <p><strong>reduce</strong> → まとめ役</p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑬ 実践問題①</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const users = [
+  { name: "Taro", age: 18 },
+  { name: "Hanako", age: 22 },
+  { name: "Jiro", age: 15 }
+];
+
+const result = users
+  .filter(user => user.age >= 18)
+  .map(user => user.name);
+
+console.log(result);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>問題</h3>
+    <p>
+      consoleには何が出力される？
+    </p>
+
+    <button class="btn secondary" onclick="toggleAnswer(this)">
+      解答を見る
+    </button>
+
+    <div class="answer-box" style="display:none;">
+      <p><strong>出力：</strong> ["Taro", "Hanako"]</p>
+      <p>
+        18歳以上をfilterで残し、
+        その後mapで名前だけを取り出している。
+      </p>
+    </div>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑭ 実践問題②</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const numbers = [5, 10, 15];
+
+const result = numbers.reduce((acc, curr) => {
+  return acc + curr;
+}, 0);
+
+console.log(result);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>問題</h3>
+    <p>
+      reduceの処理の流れを書いてみよう。
+      最終結果はいくつ？
+    </p>
+
+    <button class="btn secondary" onclick="toggleAnswer(this)">
+      解答を見る
+    </button>
+
+    <div class="answer-box" style="display:none;">
+      <p><strong>出力：</strong> 30</p>
+      <p>
+        0 + 5 = 5<br>
+        5 + 10 = 15<br>
+        15 + 15 = 30
+      </p>
+    </div>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑮ メソッドチェーン応用</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const users = [
+  { name: "Taro", age: 18 },
+  { name: "Hanako", age: 22 },
+  { name: "Jiro", age: 15 }
+];
+
+const result = users
+  .filter(user => user.age >= 18)
+  .map(user => user.age)
+  .reduce((acc, curr) => acc + curr, 0);
+
+console.log(result);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>このコードは何をしている？</h3>
+    <p>
+      18歳以上のユーザーの年齢を合計している。
+    </p>
+  </div>
+
+  <div class="explain-box">
+    <h3>処理の流れ</h3>
+    <ul>
+      <li>① filter → 18歳以上だけ残す</li>
+      <li>② map → 年齢だけ取り出す</li>
+      <li>③ reduce → 合計する</li>
+    </ul>
+  </div>
+
+  <div class="explain-box">
+    <h3>ポイント</h3>
+    <ul>
+      <li>各メソッドは新しい配列を返す</li>
+      <li>最後に reduce で1つの値にまとめる</li>
+      <li>データ処理を1行で書ける</li>
+    </ul>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑯ 理解チェック</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const numbers = [1, 2, 3, 4, 5];
+
+const result = numbers
+  .filter(num => num % 2 !== 0)
+  .map(num => num * 3)
+  .reduce((acc, curr) => acc + curr, 0);
+
+console.log(result);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>問題</h3>
+    <p>
+      consoleには何が出力される？
+    </p>
+
+    <button class="btn secondary" onclick="toggleAnswer(this)">
+      解答を見る
+    </button>
+
+    <div class="answer-box" style="display:none;">
+      <p><strong>出力：</strong> 27</p>
+      <p>
+        奇数だけ → [1,3,5]<br>
+        3倍 → [3,9,15]<br>
+        合計 → 27
+      </p>
+    </div>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑰ reduce 超応用①（カウント集計）</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const fruits = ["apple", "banana", "apple", "orange", "banana", "apple"];
+
+const result = fruits.reduce((acc, fruit) => {
+  if (acc[fruit]) {
+    acc[fruit]++;
+  } else {
+    acc[fruit] = 1;
+  }
+  return acc;
+}, {});
+
+console.log(result);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>このコードは何をしている？</h3>
+    <p>
+      配列の中に同じ値が何回出てきたかを数えている。
+    </p>
+  </div>
+
+  <div class="explain-box">
+    <h3>最終結果</h3>
+    <p>
+      { apple: 3, banana: 2, orange: 1 }
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑱ reduce 超応用②（グループ化）</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const users = [
+  { name: "Taro", age: 18 },
+  { name: "Hanako", age: 22 },
+  { name: "Jiro", age: 18 }
+];
+
+const grouped = users.reduce((acc, user) => {
+  if (!acc[user.age]) {
+    acc[user.age] = [];
+  }
+  acc[user.age].push(user.name);
+  return acc;
+}, {});
+
+console.log(grouped);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>最終結果</h3>
+    <p>
+      { 18: ["Taro", "Jiro"], 22: ["Hanako"] }
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑲ reduce 超応用③（フラット化）</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const numbers = [[1, 2], [3, 4], [5]];
+
+const flat = numbers.reduce((acc, curr) => {
+  return acc.concat(curr);
+}, []);
+
+console.log(flat);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>最終結果</h3>
+    <p>[1, 2, 3, 4, 5]</p>
+  </div>
+
+  <div class="explain-box">
+    <h3>何が起きている？</h3>
+    <p>
+      reduceで配列をつなぎ合わせて、
+      二重配列を1つの配列にしている。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級⑳ reduce 超応用④（実務集計）</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const orders = [
+  { product: "A", price: 100, quantity: 2 },
+  { product: "B", price: 200, quantity: 1 },
+  { product: "A", price: 100, quantity: 3 }
+];
+
+const totalSales = orders.reduce((acc, order) => {
+  return acc + order.price * order.quantity;
+}, 0);
+
+console.log(totalSales);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>最終結果</h3>
+    <p>700</p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級㉑ reduce 超応用⑤（商品別集計）</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+const orders = [
+  { product: "A", price: 100, quantity: 2 },
+  { product: "B", price: 200, quantity: 1 },
+  { product: "A", price: 100, quantity: 3 }
+];
+
+const salesByProduct = orders.reduce((acc, order) => {
+  if (!acc[order.product]) {
+    acc[order.product] = 0;
+  }
+
+  acc[order.product] += order.price * order.quantity;
+
+  return acc;
+}, {});
+
+console.log(salesByProduct);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>最終結果</h3>
+    <p>{ A: 500, B: 200 }</p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級㉒ 同期処理とは？</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+console.log("A");
+console.log("B");
+console.log("C");
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>出力</h3>
+    <p>A → B → C</p>
+  </div>
+
+  <div class="explain-box">
+    <h3>説明</h3>
+    <p>
+      上から順番に1つずつ実行される。
+      前の処理が終わるまで次に進まない。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級㉓ 非同期とは？</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+console.log("A");
+
+setTimeout(() => {
+  console.log("B");
+}, 1000);
+
+console.log("C");
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>問題</h3>
+    <p>出力順はどうなる？</p>
+  </div>
+
+  <div class="explain-box">
+    <h3>正解</h3>
+    <p>A → C → B</p>
+  </div>
+
+  <div class="explain-box">
+    <h3>なぜ？</h3>
+    <p>
+      setTimeoutは「後で実行予約」される。
+      その間に下の処理が先に実行される。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級㉔ コールバック地獄</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+setTimeout(() => {
+  console.log("1秒後");
+
+  setTimeout(() => {
+    console.log("さらに1秒後");
+
+    setTimeout(() => {
+      console.log("さらにさらに1秒後");
+    }, 1000);
+
+  }, 1000);
+
+}, 1000);
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>何が問題？</h3>
+    <p>
+      処理がネスト（入れ子）になり、
+      可読性がどんどん悪くなる。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級㉕ Promise</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+function wait(ms) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+}
+
+wait(1000)
+  .then(() => {
+    console.log("1秒後");
+    return wait(1000);
+  })
+  .then(() => {
+    console.log("さらに1秒後");
+    return wait(1000);
+  })
+  .then(() => {
+    console.log("さらにさらに1秒後");
+  });
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>何が良くなった？</h3>
+    <p>
+      ネストせず、上から下へ流れるように書ける。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級㉖ async / await</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+function wait(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function run() {
+  await wait(1000);
+  console.log("1秒後");
+
+  await wait(1000);
+  console.log("さらに1秒後");
+
+  await wait(1000);
+  console.log("さらにさらに1秒後");
+}
+
+run();
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>何が起きている？</h3>
+    <p>
+      await によってPromiseの完了を待ってから、
+      次の行が実行される。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級㉗ 直列処理（awaitを連続で使う）</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+function wait(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function run() {
+  await wait(1000);
+  await wait(1000);
+  await wait(1000);
+  console.log("完了");
+}
+
+run();
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>何秒かかる？</h3>
+    <p>合計 約3秒</p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級㉘ 並列処理（Promise.all）</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+function wait(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function run() {
+  await Promise.all([
+    wait(1000),
+    wait(1000),
+    wait(1000)
+  ]);
+
+  console.log("完了");
+}
+
+run();
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>何秒かかる？</h3>
+    <p>約1秒</p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級㉙ Promise.allSettled</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+function success() {
+  return Promise.resolve("成功");
+}
+
+function fail() {
+  return Promise.reject("失敗");
+}
+
+async function run() {
+  const results = await Promise.allSettled([
+    success(),
+    fail(),
+    success()
+  ]);
+
+  console.log(results);
+}
+
+run();
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>何が返る？</h3>
+    <p>
+      各Promiseごとに<br>
+      { status: "fulfilled", value: ... }<br>
+      または<br>
+      { status: "rejected", reason: ... }<br>
+      が配列で返る。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級㉚ fetch API</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+async function getUser() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
+
+    const data = await response.json();
+
+    console.log(data);
+  } catch (error) {
+    console.log("エラー発生", error);
+  }
+}
+
+getUser();
+    </code></pre>
+  </div>
+
+  <div class="explain-box">
+    <h3>処理の流れ</h3>
+    <ul>
+      <li>① fetchでリクエスト送信</li>
+      <li>② レスポンス受け取る</li>
+      <li>③ json()でデータに変換</li>
+      <li>④ データを使う</li>
+    </ul>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>上級㉛ API表示</h2>
+
+  <button class="btn primary" onclick="loadUser()">
+    ユーザー取得
+  </button>
+
+  <div id="userBox" class="result-box"></div>
+
+</section>
+
+<section class="advanced-learn">
+
+<section class="advanced-learn">
+
+  <h2>最終① データ取得 → 整形 → 集計</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+async function loadPosts() {
+  try {
+    const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+
+    if (!res.ok) {
+      throw new Error("通信エラー");
+    }
+
+    const posts = await res.json();
+
+    const result = posts
+      .filter(post => post.userId <= 3)
+      .map(post => ({
+        userId: post.userId,
+        titleLength: post.title.length
+      }))
+      .reduce((acc, post) => {
+        if (!acc[post.userId]) {
+          acc[post.userId] = 0;
+        }
+        acc[post.userId] += post.titleLength;
+        return acc;
+      }, {});
+
+    console.log(result);
+
+  } catch (error) {
+    console.error("エラー発生:", error);
+  }
+}
+
+loadPosts();
+    </code></pre>
+  </div>
+
+</section>
+
+<div class="explain-box">
+
+  <button class="btn secondary" onclick="toggleBossExplanation(this)">
+    解説を見る
+  </button>
+
+  <div class="answer-box" style="display:none; margin-top:15px;">
+
+    <h3>処理の流れ</h3>
+
+    <p><strong>① fetch</strong><br>
+    投稿データをAPIから取得している。</p>
+
+    <p><strong>② filter</strong><br>
+    userIdが3以下の投稿だけ残している。</p>
+
+    <p><strong>③ map</strong><br>
+    userIdとタイトル文字数だけを取り出している。</p>
+
+    <p><strong>④ reduce</strong><br>
+    ユーザーごとにタイトル文字数を合計している。</p>
+
+    <p><strong>最終結果の形：</strong><br>
+    { 1: 合計文字数, 2: 合計文字数, 3: 合計文字数 }</p>
+
+  </div>
+
+</div>
+
+<section class="advanced-learn">
+
+  <h2>最終② 並列API集計システム</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+async function loadDashboard() {
+  try {
+    const [usersRes, postsRes, commentsRes] = await Promise.all([
+      fetch("https://jsonplaceholder.typicode.com/users"),
+      fetch("https://jsonplaceholder.typicode.com/posts"),
+      fetch("https://jsonplaceholder.typicode.com/comments")
+    ]);
+
+    if (!usersRes.ok || !postsRes.ok || !commentsRes.ok) {
+      throw new Error("通信失敗");
+    }
+
+    const users = await usersRes.json();
+    const posts = await postsRes.json();
+    const comments = await commentsRes.json();
+
+    const dashboard = users.reduce((acc, user) => {
+
+      const userPosts = posts.filter(post => post.userId === user.id);
+
+      const totalComments = userPosts.reduce((sum, post) => {
+        const commentCount = comments.filter(
+          comment => comment.postId === post.id
+        ).length;
+
+        return sum + commentCount;
+      }, 0);
+
+      acc[user.name] = {
+        postCount: userPosts.length,
+        commentCount: totalComments
+      };
+
+      return acc;
+
+    }, {});
+
+    console.log(dashboard);
+
+  } catch (error) {
+    console.error("重大エラー:", error);
+  }
+}
+
+loadDashboard();
+    </code></pre>
+  </div>
+
+</section>
+
+<div class="explain-box">
+
+  <button class="btn secondary" onclick="toggleFinalBoss(this)">
+    解説を見る
+  </button>
+
+  <div class="answer-box" style="display:none; margin-top:15px;">
+
+    <h3>処理の全体像</h3>
+
+    <p><strong>① Promise.all</strong><br>
+    users / posts / comments を並列取得している。</p>
+
+    <p><strong>② users を reduce</strong><br>
+    各ユーザーごとにダッシュボード情報を作成。</p>
+
+    <p><strong>③ 投稿抽出</strong><br>
+    post.userId === user.id で、その人の投稿だけ取得。</p>
+
+    <p><strong>④ コメント集計</strong><br>
+    各投稿に紐づくコメント数を合計。</p>
+
+    <p><strong>⑤ 動的キー生成</strong><br>
+    acc[user.name] でオブジェクトを構築。</p>
+
+    <p><strong>最終的な形：</strong></p>
+    <pre>
+{
+  "ユーザー名": {
+    postCount: 投稿数,
+    commentCount: コメント合計
+  }
+}
+    </pre>
+
+  </div>
+
+</div>
+
+<section class="advanced-learn">
+
+  <h2>最終③ 高速最適化版</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)" class="mini-copy">コピー</button>
+    </div>
+    <pre><code>
+async function loadDashboardFast() {
+  try {
+    const [usersRes, postsRes, commentsRes] = await Promise.all([
+      fetch("https://jsonplaceholder.typicode.com/users"),
+      fetch("https://jsonplaceholder.typicode.com/posts"),
+      fetch("https://jsonplaceholder.typicode.com/comments")
+    ]);
+
+    const users = await usersRes.json();
+    const posts = await postsRes.json();
+    const comments = await commentsRes.json();
+
+    // ① postIdごとのコメント数を事前集計
+    const commentCountMap = comments.reduce((acc, comment) => {
+      acc[comment.postId] = (acc[comment.postId] || 0) + 1;
+      return acc;
+    }, {});
+
+    // ② userIdごとの投稿を事前集計
+    const postMap = posts.reduce((acc, post) => {
+      if (!acc[post.userId]) acc[post.userId] = [];
+      acc[post.userId].push(post);
+      return acc;
+    }, {});
+
+    // ③ 最終ダッシュボード生成
+    const dashboard = users.reduce((acc, user) => {
+
+      const userPosts = postMap[user.id] || [];
+
+      const totalComments = userPosts.reduce((sum, post) => {
+        return sum + (commentCountMap[post.id] || 0);
+      }, 0);
+
+      acc[user.name] = {
+        postCount: userPosts.length,
+        commentCount: totalComments
+      };
+
+      return acc;
+
+    }, {});
+
+    console.log(dashboard);
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+loadDashboardFast();
+    </code></pre>
+  </div>
+
+</section>
+
+<div class="explain-box">
+
+  <button class="btn secondary" onclick="toggleBossFast(this)">
+    解説を見る
+  </button>
+
+  <div class="answer-box" style="display:none; margin-top:15px;">
+
+    <h3>なぜこのコードは速いのか？</h3>
+
+    <p><strong>① 事前集計（インデックス作成）</strong><br>
+    comments を reduce して、
+    postIdごとのコメント数を先にまとめている。</p>
+
+    <p><strong>② 投稿も事前グループ化</strong><br>
+    posts を reduce して、
+    userIdごとの配列にまとめている。</p>
+
+    <p><strong>③ ループの中で filter を使わない</strong><br>
+    毎回全体検索せず、
+    オブジェクトから直接参照している。</p>
+
+    <p><strong>④ 計算量の違い</strong><br>
+    前のコードは O(n²) 以上。<br>
+    このコードは O(n)。</p>
+
+    <p><strong>つまり：</strong><br>
+    データが1万件でもスケールする設計になっている。</p>
+
+  </div>
+
+</div>
+
+<section class="advanced-learn">
+
+  <h2>📂 このサイトを作りたい人へ</h2>
+
+  <div class="explain-box">
+    <h3>おすすめファイル構成</h3>
+
+<pre>
+programming-dojo/
+│
+├── index.html
+├── beginner.html
+├── intermediate.html
+├── advanced.html
+│
+├── css/
+│   ├── style.css
+│   └── 自分がつけたい名前.css
+│
+├── js/
+│   ├── beginner.js
+│   ├── intermediate.js
+│   ├── advanced.js
+│   └── main.js
+│
+├── assets/
+│   ├── logo.png
+│   └── images/
+│
+└── README.md
+</pre>
+
+    <p>
+      HTMLは「構造」、
+      CSSは「見た目」、
+      JavaScriptは「動き」。
+    </p>
+
+    <p>
+      レベルごとにJSを分けることで、
+      コードが整理され、拡張しやすくなります。
+    </p>
+
+    <p>
+      上級になるほど、
+      「書く」よりも「設計する」ことが大事になります。
+    </p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>📘 この道場の振り返り</h2>
+
+  <div class="explain-box">
+    <h3>🟢 初級</h3>
+    <ul>
+      <li>HTMLの基本構造</li>
+      <li>CSSの基本</li>
+      <li>DOM操作の入門</li>
+      <li>コードを読んで理解する力</li>
+    </ul>
+    <p>→ 「書けるようになる」段階。</p>
+  </div>
+
+  <div class="explain-box">
+    <h3>🔵 中級</h3>
+    <ul>
+      <li>class構文</li>
+      <li>分割代入</li>
+      <li>map / filter / reduce</li>
+      <li>データ整形</li>
+    </ul>
+    <p>→ 「扱えるようになる」段階。</p>
+  </div>
+
+  <div class="explain-box">
+    <h3>🔴 上級</h3>
+    <ul>
+      <li>Promise / async / await</li>
+      <li>並列処理（Promise.all）</li>
+      <li>API通信</li>
+      <li>reduce超応用</li>
+      <li>パフォーマンス最適化（O(n²) → O(n)）</li>
+      <li>設計とデータ構造</li>
+    </ul>
+    <p>→ 「設計できるようになる」段階。</p>
+  </div>
+
+</section>
+
+<section class="advanced-learn">
+
+  <h2>🎉 お疲れ様でした</h2>
+
+  <div class="explain-box">
+    <p>
+      ここまで読み進めたあなたは、
+      もう「なんとなく書ける人」ではありません。
+    </p>
+
+    <p>
+      コードの意味を理解し、
+      設計を考え、
+      パフォーマンスまで意識できる。
+    </p>
+
+    <p>
+      それはもう、本物の上級者の思考です。
+    </p>
+
+    <p style="margin-top:20px; font-weight:bold;">
+      次は、あなたが新しいものを作る番です。
+    </p>
+  </div>
+
+</section>
+
+
+<footer class="site-footer">
+
+  <div class="footer-container">
+
+    <div class="footer-left">
+      <h3>Programming Dojo</h3>
+      <p>学び続けるすべての人へ。</p>
+    </div>
+
+    <div class="footer-right">
+  <h4>Connect</h4>
+
+  <div class="social-links">
+
+    <a href="なし" target="_blank" class="social-btn">
+      <!-- X アイコン -->
+      <svg viewBox="0 0 24 24" class="icon">
+        <path fill="currentColor"
+          d="M18.244 2H21.5l-7.19 8.21L22.5 22h-6.59l-5.16-6.79L4.7 22H1.44l7.7-8.8L1.5 2h6.73l4.67 6.16L18.244 2z"/>
+      </svg>
+      <span>X</span>
+    </a>
+
+    <a href="https://youtube.com/@Rerly_a" target="_blank" class="social-btn">
+      <!-- YouTube アイコン -->
+      <svg viewBox="0 0 24 24" class="icon">
+        <path fill="currentColor"
+          d="M23.5 6.2s-.2-1.7-.9-2.4c-.9-.9-1.9-.9-2.4-1C16.8 2.5 12 2.5 12 2.5h0s-4.8 0-8.2.3c-.5.1-1.5.1-2.4 1C.7 4.5.5 6.2.5 6.2S.2 8.1.2 10v2c0 1.9.3 3.8.3 3.8s.2 1.7.9 2.4c.9.9 2.1.9 2.6 1 1.9.2 8 .3 8 .3s4.8 0 8.2-.3c.5-.1 1.5-.1 2.4-1 .7-.7.9-2.4.9-2.4s.3-1.9.3-3.8v-2c0-1.9-.3-3.8-.3-3.8zM9.8 14.8V8.9l6.3 3-6.3 2.9z"/>
+      </svg>
+      <span>YouTube</span>
+    </a>
+
+    <a href="https://github.com/Rerly" target="_blank" class="social-btn">
+      <!-- GitHub アイコン -->
+      <svg viewBox="0 0 24 24" class="icon">
+        <path fill="currentColor"
+          d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58 0-.29-.01-1.05-.02-2.06-3.34.73-4.04-1.61-4.04-1.61-.55-1.4-1.34-1.77-1.34-1.77-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48.99.11-.77.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.94 0-1.31.47-2.38 1.23-3.22-.12-.3-.53-1.52.12-3.16 0 0 1.01-.32 3.3 1.23.96-.27 1.99-.4 3.02-.4s2.06.13 3.02.4c2.29-1.55 3.3-1.23 3.3-1.23.65 1.64.24 2.86.12 3.16.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.64-5.48 5.94.43.37.82 1.1.82 2.22 0 1.6-.02 2.89-.02 3.28 0 .32.22.7.83.58C20.56 21.8 24 17.3 24 12 24 5.37 18.63 0 12 0z"/>
+      </svg>
+      <span>GitHub</span>
+    </a>
+
+  </div>
+</div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © <span id="year"></span> Programming Dojo. All Rights Reserved.
+  </div>
+
+</footer>
+
+  </main>
+
+  <!-- 上級用JS -->
+  <script src="../js/advanced.js"></script>
+</body>
+</html>

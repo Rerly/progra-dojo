@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中級：DOM操作の基本</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo">
+      <img src="../assets/images/logo.png" alt="プログラ道場">
+    </a>
+    <nav>
+      <ul>
+        <li><a href="beginner.html">初級</a></li>
+        <li><a href="intermediate.html">中級</a></li>
+        <li><a href="advanced.html">上級</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+  <section class="lesson-container">
+
+    <h1>中級：DOM操作の基本</h1>
+    <p class="lesson-sub">
+      JavaScriptを使って、Webページの内容を動的に変更できるようになります。
+    </p>
+
+    <h2>学習目標</h2>
+    <ul>
+      <li>DOMとは何かを説明できる</li>
+      <li>documentの役割を理解する</li>
+      <li>getElementByIdの仕組みを理解する</li>
+      <li>textContentで文字を変更できる</li>
+    </ul>
+
+    <h2>DOMとは？</h2>
+    <p>
+      DOM（Document Object Model）とは、
+      WebページをJavaScriptから操作できる仕組みのことです。
+    </p>
+    <p>
+      HTMLで作った要素（h1やpなど）を、
+      JavaScriptで取得し、変更できるようになります。
+    </p>
+
+    <h2>基本構造</h2>
+
+    <div class="code-wrapper">
+  <div class="code-header">
+    <span>JavaScript</span>
+    <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+  </div>
+
+  <pre><code>
+function changeText() {
+  const element = document.getElementById("text");
+  element.textContent = "やった！";
+}
+  </code></pre>
+</div>
+
+    <h3>構造を分解してみよう</h3>
+
+    <ul>
+      <li><strong>function</strong> → 動作のまとまりを作る</li>
+      <li><strong>document</strong> → Webページ全体を表す</li>
+      <li><strong>getElementById</strong> → idで要素を取得する</li>
+      <li><strong>textContent</strong> → 要素の文字を変更する</li>
+    </ul>
+
+  </section>
+
+       <section class="practice-box">
+  <h2>① ボタンで文字を変えてみよう</h2>
+
+  <div class="demo-area">
+    <p id="text1">こんにちは</p>
+    <button id="changeBtn">変更する</button>
+  </div>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button class="copy-btn" onclick="copyCode(this)">コピー</button>
+    </div>
+    <pre><code>
+const btn1 = document.getElementById("changeBtn");
+const text1 = document.getElementById("text1");
+
+btn1.addEventListener("click", function() {
+  text1.textContent = "やった！";
+});
+    </code></pre>
+  </div>
+</section>
+
+<section class="practice-box">
+  <h2>② 入力した文字をリアルタイム表示</h2>
+
+  <div class="demo-area">
+    <input type="text" id="liveInput" placeholder="文字を入力してみよう">
+    <p id="liveOutput">ここに表示されます</p>
+  </div>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)">コピー</button>
+    </div>
+    <pre><code>
+const input = document.getElementById("liveInput");
+const output = document.getElementById("liveOutput");
+
+input.addEventListener("input", function() {
+  output.textContent = input.value;
+});
+    </code></pre>
+  </div>
+</section>
+
+<section class="practice-box">
+  <h2>③ 色を切り替えてみよう</h2>
+
+  <div class="demo-area">
+    <p id="colorText">色が変わるよ</p>
+    <button id="colorBtn">色を変える</button>
+  </div>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)">コピー</button>
+    </div>
+    <pre><code>
+const btn = document.getElementById("colorBtn");
+const text = document.getElementById("colorText");
+
+btn.addEventListener("click", function() {
+  text.classList.toggle("active-color");
+});
+    </code></pre>
+  </div>
+</section>
+
+<section class="practice-box">
+  <h2>④ 要素を追加してみよう</h2>
+
+  <div class="demo-area">
+    <button id="addBtn">追加する</button>
+    <ul id="listArea"></ul>
+  </div>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)">コピー</button>
+    </div>
+    <pre><code>
+const addBtn = document.getElementById("addBtn");
+const list = document.getElementById("listArea");
+
+addBtn.addEventListener("click", function() {
+  const li = document.createElement("li");
+  li.textContent = "新しい項目";
+  list.appendChild(li);
+});
+    </code></pre>
+  </div>
+</section>
+
+<section class="theory-section">
+
+  <h2>① イベントの仕組み</h2>
+
+  <p><strong>イベント</strong>とは、ユーザーの操作をきっかけに実行される処理のこと。</p>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>基本構造</span>
+      <button onclick="copyCode(this)">コピー</button>
+    </div>
+    <pre><code>
+element.addEventListener("click", function() {
+  // 実行する処理
+});
+    </code></pre>
+  </div>
+
+  <ul>
+    <li>element → どの要素？</li>
+    <li>"click" → どんなイベント？</li>
+    <li>function → 何を実行する？</li>
+  </ul>
+
+  <h2>② DOMツリーとは？</h2>
+
+  <p>HTMLは親子関係を持つツリー構造になっている。</p>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>DOM構造イメージ</span>
+      <button onclick="copyCode(this)">コピー</button>
+    </div>
+    <pre><code>
+html
+ └ body
+    └ div
+       └ button
+    </code></pre>
+  </div>
+
+  <h2>③ classListとは？</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>classList操作</span>
+      <button onclick="copyCode(this)">コピー</button>
+    </div>
+    <pre><code>
+element.classList.add("active");
+element.classList.remove("active");
+element.classList.toggle("active");
+    </code></pre>
+  </div>
+
+  <h2>④ 要素生成の流れ</h2>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>要素追加の流れ</span>
+      <button onclick="copyCode(this)">コピー</button>
+    </div>
+    <pre><code>
+const li = document.createElement("li");
+li.textContent = "新しい項目";
+list.appendChild(li);
+    </code></pre>
+  </div>
+
+</section>
+
+<section class="theory-section">
+
+  <h2>⑤ イベントオブジェクトとは？</h2>
+
+  <p>
+    イベントが発生すると、JavaScriptは自動的に
+    <strong>eventオブジェクト</strong>を渡してくれる。
+  </p>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>イベントオブジェクトの基本</span>
+      <button onclick="copyCode(this)">コピー</button>
+    </div>
+    <pre><code>
+element.addEventListener("click", function(event) {
+  console.log(event);
+});
+    </code></pre>
+  </div>
+
+  <ul>
+    <li>event.target → クリックされた要素</li>
+    <li>event.type → イベントの種類</li>
+    <li>event.preventDefault() → デフォルト動作を止める</li>
+  </ul>
+
+</section>
+
+<section class="theory-section">
+
+  <h2>⑥ フォームと preventDefault()</h2>
+
+  <form id="sampleForm">
+    <input type="text" placeholder="何か入力">
+    <button type="submit">送信</button>
+  </form>
+
+  <p id="formMessage"></p>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)">コピー</button>
+    </div>
+    <pre><code>
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
+  message.textContent = "送信は止められました";
+});
+    </code></pre>
+  </div>
+
+</section>
+
+<section class="theory-section">
+
+  <h2>⑦ data属性</h2>
+
+  <button class="dataBtn" data-color="red">赤</button>
+  <button class="dataBtn" data-color="blue">青</button>
+  <button id="resetColor">元に戻す</button>
+
+</section>
+
+<section class="theory-section">
+
+  <h2>⑧ 簡単なTODOアプリ</h2>
+
+  <input type="text" id="todoInput" placeholder="タスク入力">
+  <button id="todoAdd">追加</button>
+  <ul id="todoList"></ul>
+
+</section>
+
+<section class="theory-section">
+
+  <h2>⑩ classList.toggle()</h2>
+
+  <div id="boxToggle" class="box">
+    クリックすると色が変わる
+  </div>
+
+  <button id="toggleBtn" class="btn">切り替え</button>
+
+  <div class="code-wrapper">
+    <div class="code-header">
+      <span>JavaScript</span>
+      <button onclick="copyCode(this)">コピー</button>
+    </div>
+    <pre><code>
+toggleBtn.addEventListener("click", function() {
+  box.classList.toggle("active");
+});
+    </code></pre>
+  </div>
+
+</section>
+
+<section class="theory-section">
+
+  <h2>⑪ モーダル</h2>
+
+  <button id="openModal" class="btn">開く</button>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <p>これがモーダルです</p>
+      <button id="closeModal">閉じる</button>
+    </div>
+  </div>
+
+</section>
+
+<section class="theory-section">
+
+  <h2>⑫ ダークモード</h2>
+
+  <button id="darkToggle" class="btn secondary">ダークモード切替</button>
+
+</section>
+
+  <script src="../js/intermediate.js"></script>
+</body>
+</html>

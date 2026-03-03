@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>初級：HTMLの基本構造 | プログラ道場</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo">
+      <img src="../assets/images/logo.png" alt="プログラ道場">
+    </a>
+    <nav>
+      <ul>
+        <li><a href="beginner.html">初級</a></li>
+        <li><a href="intermediate.html">中級</a></li>
+        <li><a href="advanced.html">上級</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ヒーロー -->
+<section class="lesson-hero">
+  <div class="lesson-inner">
+    <h1>初級：HTMLの基本構造</h1>
+    <p>Webページの土台を理解し、自分で書けるようになる。</p>
+  </div>
+</section>
+
+<!-- コンテンツ -->
+<section class="lesson-content">
+  <div class="lesson-inner">
+
+    <h2>学習目標</h2>
+    <ul class="lesson-goals">
+      <li>HTMLの役割を説明できる</li>
+      <li>基本構造を自分で書ける</li>
+      <li>headとbodyの違いを理解する</li>
+    </ul>
+
+    <h2>HTMLとは？</h2>
+    <p>
+      HTMLはWebページの「構造」を作るための言語です。
+      文字や画像の配置、見出しや段落などを定義します。
+    </p>
+
+    <h2>基本構造</h2>
+
+   <div class="code-wrapper line-numbers">
+  <div class="code-header">
+    <span>HTML</span>
+    <button class="copy-btn">コピー</button>
+  </div>
+  <pre><code class="language-html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="ja"&gt;
+
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;はじめてのページ&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;h1&gt;こんにちは&lt;/h1&gt;
+  &lt;p&gt;これはHTMLの基本構造です。&lt;/p&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;
+  </code></pre>
+</div>
+
+    <h3>コードの詳しい解説</h3>
+
+<h4>&lt;!DOCTYPE html&gt;</h4>
+<p>
+この宣言は、「このファイルはHTML5で書かれています」と
+ブラウザに伝えるものです。
+これがないと、ブラウザが古い表示モードで動いてしまう場合があります。
+</p>
+
+<h4>&lt;html lang="ja"&gt;</h4>
+<p>
+HTML全体を囲むタグです。
+lang="ja" は「このページは日本語です」と伝える設定です。
+検索エンジンや読み上げ機能にも影響します。
+</p>
+
+<h4>&lt;head&gt;</h4>
+<p>
+ページの設定を書く場所です。
+画面には直接表示されませんが、
+ページの動作や表示にとても重要です。
+</p>
+
+<h4>&lt;meta charset="UTF-8"&gt;</h4>
+<p>
+文字コードの設定です。
+これを書くことで、日本語が文字化けしなくなります。
+</p>
+
+<h4>&lt;meta name="viewport"&gt;</h4>
+<p>
+スマホ表示のための設定です。
+これがあることで、画面サイズに合わせてレイアウトが調整されます。
+</p>
+
+<h4>&lt;title&gt;</h4>
+<p>
+ブラウザのタブに表示されるタイトルです。
+検索結果にも表示されるため、とても重要なタグです。
+</p>
+
+<h4>&lt;body&gt;</h4>
+<p>
+実際に画面に表示される内容を書く場所です。
+見出し、文章、画像などはすべてここに書きます。
+</p>
+
+    <h2>まとめ</h2>
+    <p>
+      HTMLはWebページの土台です。
+      まずは基本構造を正しく書けることが最重要です。
+    </p>
+
+    <h2>コードを読んでみよう</h2>
+
+<p>
+次のHTMLコードを読んで、画面には何が表示されるか考えてみましょう。
+</p>
+
+<div class="code-wrapper">
+  <div class="code-header">
+    <span>HTML</span>
+    <button class="copy-btn">コピー</button>
+  </div>
+  <pre><code class="language-html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;テストページ&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;ようこそ&lt;/h1&gt;
+  &lt;p&gt;これは練習用のページです。&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+  </code></pre>
+</div>
+
+    <h3 id="questionText"></h3>
+
+<div class="drag-container">
+
+  <div class="choices" id="choices">
+    <!-- JSで生成 -->
+  </div>
+
+  <div class="answer-area" id="dropZone">
+    ここにドラッグ
+  </div>
+
+  <button class="quiz-btn" onclick="checkAnswer()">回答する</button>
+
+  <div id="dragResult"></div>
+
+</div>
+
+     <h2>自分で書いてみよう</h2>
+
+<p>
+h1タグを使って「はじめてのHTML」と表示させてみよう。
+</p>
+
+<div class="practice-container">
+
+  <textarea id="codeInput" placeholder="<h1>はじめてのHTML</h1>"></textarea>
+
+  <button class="quiz-btn" onclick="checkPractice()">答えを確認する</button>
+
+  <div class="practice-preview">
+    <h3>プレビュー</h3>
+    <div id="previewArea"></div>
+  </div>
+
+  <div id="practiceResult"></div>
+
+</div>
+
+     <h2>見出しタグのレベル</h2>
+
+<p>
+h1〜h3までを書いて、文字の大きさの違いを確認してみよう。
+</p>
+
+<textarea id="codeInput2" placeholder="<h1>大見出し</h1>
+<h2>中見出し</h2>
+<h3>小見出し</h3>"></textarea>
+
+<div class="practice-preview">
+  <h3>プレビュー</h3>
+  <div id="previewArea2"></div>
+</div>
+
+     <h2>段落タグを書いてみよう</h2>
+
+<p>
+pタグを使って2つの文章を書いてみよう。
+</p>
+
+<textarea id="codeInput3" placeholder="<p>1つ目の文章</p>
+<p>2つ目の文章</p>"></textarea>
+
+<div class="practice-preview">
+  <h3>プレビュー</h3>
+  <div id="previewArea3"></div>
+</div>
+
+     <h2>リンクを作ってみよう</h2>
+
+<p>
+aタグを使ってGoogleへのリンクを作ってみよう。
+</p>
+
+<textarea id="codeInput4" placeholder='<a href="https://google.com">Googleへ</a>'></textarea>
+
+<div class="practice-preview">
+  <h3>プレビュー</h3>
+  <div id="previewArea4"></div>
+</div>
+
+     <h2>コメントを書いてみよう</h2>
+
+<p>
+HTMLコメントを書いてみよう。（画面には表示されません）
+</p>
+
+<textarea id="codeInput6" placeholder="<!-- これはコメントです -->"></textarea>
+
+<div class="practice-preview">
+  <h3>プレビュー</h3>
+  <div id="previewArea6"></div>
+</div>
+
+     <h3>構造を分解してみよう</h3>
+
+<div class="css-structure-box">
+  <pre class="structure-code">
+h1 {
+  color: blue;
+}
+  </pre>
+
+  <div class="structure-explain">
+    <div><span class="label selector">h1</span> → セレクタ（どの要素に？）</div>
+    <div><span class="label property">color</span> → プロパティ（何を変える？）</div>
+    <div><span class="label value">blue</span> → 値（どう変える？）</div>
+  </div>
+</div>
+
+     <h2>CSSで文字色を変えてみよう</h2>
+
+<p>
+h1の文字色を青にしてみよう。
+</p>
+
+<div class="css-practice">
+
+  <div class="html-preview-box">
+    <h1 id="cssTarget">CSS練習中</h1>
+  </div>
+
+  <textarea 
+    class="code-editor css-editor"
+    id="cssInput"
+    placeholder="h1 { color: blue; }"
+  ></textarea>
+
+</div>
+
+    <div style="margin-top:60px; text-align:right;">
+      <a href="intermediate.html" class="btn primary">次へ：中級へ進む</a>
+    </div>
+
+  </div>
+</section>
+
+<footer style="text-align:center; padding:40px 0; color:#777;">
+  © 2026 プログラ道場
+</footer>
+
+<script src="../js/beginner.js"></script>
+
+</body>
+</html>
